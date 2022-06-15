@@ -1,7 +1,9 @@
 const canvas = document.querySelector("canvas");
+const pauseBtn = document.querySelector(".pause");
 
-const width = 1300;
-const height = 800;
+const width = 1900;
+const height = window.innerHeight;
+console.log(Math.round(window.innerWidth));
 
 canvas.width = width;
 canvas.height = height;
@@ -10,7 +12,7 @@ canvas.style.border = "1px solid black";
 
 const ctx = canvas.getContext("2d");
 
-const res = 10;
+const res = 20;
 
 let stopped = false;
 
@@ -39,6 +41,7 @@ const findCoord = (e) => {
           x: x,
           y: y,
         };
+        ctx.fillStyle = "#43B0F1";
         ctx.fillRect(xCoord, yCoord, res, res);
       }
     }
@@ -111,6 +114,11 @@ const onstart = () => {
         y: y,
       };
 
+      if (grid[i][j].state === 0) {
+        ctx.fillStyle = "#1E3D58";
+        ctx.fillRect(x, y, res, res);
+      }
+      ctx.strokeStyle = "#E8EEF1";
       ctx.strokeRect(x, y, res, res);
     }
   }
@@ -125,9 +133,14 @@ const setup = () => {
       let y = j * res;
 
       if (grid[i][j].state === 1) {
+        ctx.fillStyle = "#43B0F1";
         ctx.fillRect(x, y, res, res);
       } else {
         ctx.clearRect(x, y, res, res);
+        ctx.fillStyle = "#1E3D58";
+        ctx.fillRect(x, y, res, res);
+        ctx.strokeStyle = "#E8EEF1";
+        ctx.strokeRect(x, y, res, res);
       }
     }
   }
@@ -159,6 +172,14 @@ const setup = () => {
 };
 const pause = () => {
   stopped = !stopped;
+  if (stopped) {
+    pauseBtn.innerHTML = "Resume";
+  }
+
+  if (!stopped) {
+    draw();
+    pauseBtn.innerHTML = "Pause";
+  }
 };
 
 const draw = () => {
