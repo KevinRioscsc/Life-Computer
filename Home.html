@@ -8,6 +8,15 @@
     <title>Document</title>
   </head>
   <body>
+    <div class="burg" onclick = 'checked()'>
+    <input type="checkbox" id="checkbox">
+    <div id="ham" class="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
     <canvas></canvas>
 
     <div class="flex">
@@ -16,9 +25,9 @@
       </div>
 
       <div class="btn">
-        <button onclick="draw()">Start</button>
-        <button onclick="randomize()">Random</button>
-        <button class="pause" onclick="pause()">Pause</button>
+        <button id="start" onclick="draw()">Start</button>
+        <button id="random" onclick="randomize()">Random</button>
+        <button id = 'pause' class="pause" onclick="pause()">Pause</button>
       </div>
     </div>
     <script src="./Life.js"></script>

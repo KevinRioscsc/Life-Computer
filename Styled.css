@@ -1,13 +1,63 @@
 body {
   padding: 0;
   margin: 0;
+  position: relative;
 }
+.burg {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1000;
+  }
+.hamburger{
+  position: relative;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  width: 30px;
+  height: 30px;
+}
+input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 80px;
+  width: 80px;
+  z-index: 100;
+  }
+  span{
+    height: 4px;
+    background-color: white;
+    display: block;
+    border-radius: 4px;
+    -webkit-transition: all 0.4s ease-in-out;
+    transition: all 0.4s ease-in-out;
+    width: 30px;
+  }
+span:nth-child(1){
+  position: absolute;
+  top: 0;
+  
+}
+span:nth-child(2),
+span:nth-child(3){
+  position: absolute;
+  top: 13.5px;
+}
+span:last-child{
+  position: absolute;
+  bottom: 0;
+}
+ 
 .flex {
   position: fixed;
+  background: whitesmoke;
+  width: 100%;
   z-index: 99;
   display: flex;
   align-items: center;
   justify-content: space-around;
+  bottom: 0;
 }
 .space {
   max-width: 1300px;

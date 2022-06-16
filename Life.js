@@ -1,8 +1,22 @@
 const canvas = document.querySelector("canvas");
 const pauseBtn = document.querySelector(".pause");
+const checkbox = document.getElementById('checkbox')
+const hamburger = document.getElementById('ham')
+
+
+const checked = () => {
+  if(checkbox.checked){
+   hamburger.children.map((item, index) => {
+      console.log(item)
+   })
+  }
+}
+
+document.getElementById('pause').disabled = true
+
 
 const width = 1900;
-const height = window.innerHeight;
+const height = 800;
 console.log(Math.round(window.innerWidth));
 
 canvas.width = width;
@@ -75,10 +89,11 @@ const randomize = () => {
         x: x,
         y: y,
       };
-
+      ctx.strokeStyle = "#E8EEF1"
       ctx.strokeRect(x, y, res, res);
 
       if (grid[i][j].state === 1) {
+        ctx.fillStyle = "#43B0F1";
         ctx.fillRect(x, y, res, res);
       }
     }
@@ -125,6 +140,10 @@ const onstart = () => {
 };
 
 const setup = () => {
+  if(!stopped){
+    document.getElementById('random').disabled = true
+    document.getElementById('pause').disabled = false
+  }
   let next = create2D(cols, row);
 
   for (let i = 0; i < cols; i++) {
@@ -175,7 +194,7 @@ const pause = () => {
   if (stopped) {
     pauseBtn.innerHTML = "Resume";
   }
-
+  pauseBtn.ariaDisable = true
   if (!stopped) {
     draw();
     pauseBtn.innerHTML = "Pause";
