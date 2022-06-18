@@ -8,16 +8,34 @@
     <title>Document</title>
   </head>
   <body>
-    <div class="burg" onclick = 'checked()'>
-    <input type="checkbox" id="checkbox">
-    <div id="ham" class="hamburger">
+    <div id="menuToggle">
+      <input type="checkbox" class="checkbox" />
+
       <span></span>
       <span></span>
       <span></span>
-      <span></span>
+
+      <ul id="menu" class="container">
+        <div id="glider" class="draggable" draggable="true">
+          <img src="./Images/images.png" alt="" />
+        </div>
+        <div id="slider-2" class="draggable" draggable="true">
+          <img src="./Images/images.png" alt="" />
+        </div>
+        <div id="slider-3" class="draggable" draggable="true">
+          <img src="./Images/images.png" alt="" />
+        </div>
+        <div id="slider-4" class="draggable" draggable="true">
+          <img src="./Images/images.png" alt="" />
+        </div>
+        <div id="glider-gun" class="draggable" draggable="true">
+          <img src="./Images/images.png" alt="" />
+        </div>
+      </ul>
     </div>
-  </div>
-    <canvas></canvas>
+    <div class="canvas">
+      <canvas></canvas>
+    </div>
 
     <div class="flex">
       <div class="logo">
@@ -25,9 +43,10 @@
       </div>
 
       <div class="btn">
-        <button id="start" onclick="draw()">Start</button>
+        <button id="start" onclick="start()">Start</button>
         <button id="random" onclick="randomize()">Random</button>
-        <button id = 'pause' class="pause" onclick="pause()">Pause</button>
+        <button id="pause" class="pause" onclick="pause()">Pause</button>
+        <button id="reset" class="reset" onclick="reset()">Reset</button>
       </div>
     </div>
     <script src="./Life.js"></script>

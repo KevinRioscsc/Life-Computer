@@ -3,52 +3,131 @@ body {
   margin: 0;
   position: relative;
 }
-.burg {
-  position: fixed;
-  top: 1rem;
-  left: 1rem;
-  z-index: 1000;
-  }
-.hamburger{
-  position: relative;
+#menuToggle {
+  display: inline-block;
+  position: absolute;
+  top: 30px;
+  left: 20px;
+
+  z-index: 1;
+
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#menuToggle a {
+  text-decoration: none;
+  color: #232323;
+
+  transition: color 0.3s ease;
+}
+
+#menuToggle a:hover {
+  color: tomato;
+}
+
+#menuToggle input {
+  display: block;
+  width: 40px;
+  height: 32px;
+  position: absolute;
   top: 0;
   left: 0;
-  z-index: 99;
-  width: 30px;
-  height: 30px;
-}
-input[type="checkbox"] {
-  position: absolute;
-  opacity: 0;
+
   cursor: pointer;
-  height: 80px;
-  width: 80px;
-  z-index: 100;
-  }
-  span{
-    height: 4px;
-    background-color: white;
-    display: block;
-    border-radius: 4px;
-    -webkit-transition: all 0.4s ease-in-out;
-    transition: all 0.4s ease-in-out;
-    width: 30px;
-  }
-span:nth-child(1){
-  position: absolute;
-  top: 0;
-  
+
+  opacity: 0; /* hide this */
+  z-index: 2; /* and place it over the hamburger */
+
+  -webkit-touch-callout: none;
 }
-span:nth-child(2),
-span:nth-child(3){
-  position: absolute;
-  top: 13.5px;
+
+/*
+ * Just a quick hamburger
+ */
+#menuToggle span {
+  display: block;
+  width: 33px;
+  height: 4px;
+  margin-bottom: 5px;
+  position: relative;
+
+  background: #cdcdcd;
+  border-radius: 3px;
+
+  z-index: 1;
+  margin-right: 0;
+
+  transform-origin: 4px 0px;
+
+  transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1),
+    background 0.5s cubic-bezier(0.77, 0.2, 0.05, 1), opacity 0.55s ease;
 }
-span:last-child{
-  position: absolute;
-  bottom: 0;
+
+#menuToggle span:first-child {
+  transform-origin: 0% 0%;
 }
- 
+
+#menuToggle span:nth-last-child(2) {
+  transform-origin: 0% 100%;
+}
+
+/* 
+ * Transform all the slices of hamburger
+ * into a crossmark.
+ */
+#menuToggle input:checked ~ span {
+  opacity: 1;
+  transform: rotate(45deg) translate(-2px, -1px);
+  background: #232323;
+}
+
+/*
+ * But let's hide the middle one.
+ */
+#menuToggle input:checked ~ span:nth-last-child(3) {
+  opacity: 0;
+  transform: rotate(0deg) scale(0.2, 0.2);
+}
+
+/*
+ * Ohyeah and the last one should go the other direction
+ */
+#menuToggle input:checked ~ span:nth-last-child(2) {
+  transform: rotate(-45deg) translate(0, -1px);
+}
+
+/*
+ * Make this absolute positioned
+ * at the top left of the screen
+ */
+#menu {
+  position: absolute;
+  width: 200px;
+  margin: -100px 0 0 -50px;
+  padding: 50px;
+  padding-top: 125px;
+  overflow: scroll;
+
+  background: #ededed;
+  list-style-type: none;
+  -webkit-font-smoothing: antialiased;
+  /* to stop flickering of text in safari */
+
+  transform-origin: 0% 0%;
+  transform: translate(-100%, 0);
+  height: 750px;
+  transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1);
+}
+
+#menu li {
+  padding: 10px 0;
+  font-size: 22px;
+}
+
+#menuToggle input:checked ~ ul {
+  transform: none;
+}
 .flex {
   position: fixed;
   background: whitesmoke;
@@ -75,4 +154,10 @@ button {
 button:hover {
   background: black;
   color: white;
+}
+.dragging {
+  opacity: 0.1;
+}
+.canvas {
+  overflow: auto;
 }
