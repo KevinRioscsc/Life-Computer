@@ -157,6 +157,8 @@ let prevCord = { x: 10, y: 10 };
 let prevPosition;
 let shapeSwitch = "default";
 let index_of_shape = 0;
+let isShift = false;
+let itFit;
 
 draggable.forEach((draggables) => {
   draggables.addEventListener("dragstart", () => {
@@ -166,13 +168,8 @@ draggable.forEach((draggables) => {
   });
   draggables.addEventListener("dragend", () => {
     draggables.classList.remove("dragging");
-    let shape;
-    shapes.forEach((item) => {
-      if (draggables.id === item.name) {
-        shape = item;
-      }
-    });
-    if (prev) {
+
+    if (itFit) {
       prevPosition.forEach((item) => {
         grid[prevCord.x + item.x][prevCord.y + item.y] = {
           ...grid[prevCord.x][prevCord.y],
@@ -181,11 +178,15 @@ draggable.forEach((draggables) => {
       });
       onstart();
     }
+    onstart();
   });
 });
 
 canvas.addEventListener("dragover", (e) => {
   e.preventDefault();
+  if (!e.shiftKey) {
+    isShift = false;
+  }
 
   const currentShape = document.querySelector(".dragging");
 
@@ -195,12 +196,6 @@ canvas.addEventListener("dragover", (e) => {
       shapeCoord = item.status;
     }
   });
-
-  if (e.shiftKey) {
-    shapeSwitch = changeShapeName();
-
-    console.log(e);
-  }
 
   const findShape = shapeConfig.find((item) => item.name === shapeSwitch);
 
@@ -213,51 +208,51 @@ canvas.addEventListener("dragover", (e) => {
   const foundCell = findCell(x, y);
   const currentCell = grid[foundCell.x][foundCell.y];
 
+  itFit = canFit(foundCell, shapeCoord);
+
+  drawCell(shapeCoord, foundCell.x, foundCell.y, itFit);
+
   if (currentCell !== prev) {
     shapeCoord.forEach((item) => {
-      ctx.clearRect(
-        grid[prevCord.x + item.x][prevCord.y + item.y].x,
-        grid[prevCord.x + item.x][prevCord.y + item.y].y,
-        res,
-        res
-      );
-      ctx.fillStyle = "#1E3D58";
-      ctx.fillRect(
-        grid[prevCord.x + item.x][prevCord.y + item.y].x,
-        grid[prevCord.x + item.x][prevCord.y + item.y].y,
-        res,
-        res
-      );
-      ctx.strokeStyle = "#E8EEF1";
-      ctx.strokeRect(
-        grid[prevCord.x + item.x][prevCord.y + item.y].x,
-        grid[prevCord.x + item.x][prevCord.y + item.y].y,
-        res,
-        res
-      );
+      if (prevCord.x + item.x >= 0 && prevCord.y + item.y >= 0) {
+        ctx.clearRect(
+          grid[prevCord.x + item.x][prevCord.y + item.y].x,
+          grid[prevCord.x + item.x][prevCord.y + item.y].y,
+          res,
+          res
+        );
+        ctx.fillStyle = "#1E3D58";
+        ctx.fillRect(
+          grid[prevCord.x + item.x][prevCord.y + item.y].x,
+          grid[prevCord.x + item.x][prevCord.y + item.y].y,
+          res,
+          res
+        );
+        ctx.strokeStyle = "#E8EEF1";
+        ctx.strokeRect(
+          grid[prevCord.x + item.x][prevCord.y + item.y].x,
+          grid[prevCord.x + item.x][prevCord.y + item.y].y,
+          res,
+          res
+        );
+      }
     });
     prev = currentCell;
     prevCord = foundCell;
     prevPosition = shapeCoord;
   }
   /*===================================================== */
+  if (e.shiftKey && !isShift) {
+    prevPosition = shapeCoord;
+    shapeSwitch = changeShapeName();
 
-  drawCell(shapeCoord, foundCell.x, foundCell.y);
+    clearShape();
+    isShift = true;
+  }
 });
 
-const changeShapeName = () => {
-  if (index_of_shape === shapeConfig.length - 1) {
-    console.log("end");
-    return shapeConfig[0].name;
-  }
-  index_of_shape += 1;
-  const currentConfig = shapeConfig[index_of_shape];
-
-  return currentConfig.name;
-};
-
-const changeShape = (arr, name) => {
-  arr.forEach((item) => {
+const clearShape = () => {
+  prevPosition.forEach((item) => {
     ctx.clearRect(
       grid[prevCord.x + item.x][prevCord.y + item.y].x,
       grid[prevCord.x + item.x][prevCord.y + item.y].y,
@@ -279,6 +274,34 @@ const changeShape = (arr, name) => {
       res
     );
   });
+};
+
+const changeShapeName = () => {
+  let currentConfig;
+  if (index_of_shape === shapeConfig.length - 1) {
+    index_of_shape = 0;
+    console.log("end");
+    currentConfig = shapeConfig[index_of_shape];
+  } else {
+    index_of_shape += 1;
+    currentConfig = shapeConfig[index_of_shape];
+  }
+
+  return currentConfig.name;
+};
+
+const canFit = (foundCell, shapeCoord) => {
+  let inBounds = true;
+  shapeCoord.forEach((item) => {
+    if (foundCell.x + item.x < 0 || foundCell.y + item.y < 0) {
+      inBounds = false;
+    }
+  });
+
+  return inBounds;
+};
+
+const changeShape = (arr, name) => {
   if (name === "reverse") {
     const arrCopy = arr.map((item) => {
       return (item = {
@@ -314,16 +337,27 @@ const changeShape = (arr, name) => {
   return arr;
 };
 
-const drawCell = (shapeCoord, i, j) => {
-  ctx.fillStyle = "rgba(255, 255, 255, 0.49)";
-
+const drawCell = (shapeCoord, i, j, itFit) => {
   shapeCoord.forEach((item) => {
-    ctx.fillRect(
-      grid[i + item.x][j + item.y].x,
-      grid[i + item.x][j + item.y].y,
-      res,
-      res
-    );
+    if (itFit) {
+      ctx.fillStyle = "rgba(255, 255, 255, 0.49)";
+      ctx.fillRect(
+        grid[i + item.x][j + item.y].x,
+        grid[i + item.x][j + item.y].y,
+        res,
+        res
+      );
+    } else {
+      if (i + item.x >= 0 && j + item.y >= 0) {
+        ctx.fillStyle = "red";
+        ctx.fillRect(
+          grid[i + item.x][j + item.y].x,
+          grid[i + item.x][j + item.y].y,
+          res,
+          res
+        );
+      }
+    }
   });
 };
 const findCell = (x, y) => {
