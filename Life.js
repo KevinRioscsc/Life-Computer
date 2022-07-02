@@ -627,7 +627,7 @@ const startGame = () => {
   const border = hash.addBorder(nextGen);
 
   const gridArr = hash.destruct(border);
-  console.log(gridArr);
+  console.table(gridArr);
   //console.log(nextGen);
 
   const newGrid = hash.transformToGrid(grid, gridArr);

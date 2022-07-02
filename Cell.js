@@ -354,6 +354,8 @@ export default class HashLife {
     arr.push(node.se.sw);
     arr.push(node.se.se);
 
+    this.matrix.push(arr)
+
     return arr;
   }
   contruct(level, grid) {
@@ -404,10 +406,10 @@ export default class HashLife {
       node.se.ne
     );
     let destructNW = this.create(
-      node.nw.sw,
-      node.nw.se,
       node.nw.nw,
-      node.nw.ne
+      node.nw.ne,
+      node.nw.sw,
+      node.nw.se
     );
     let destructNE = this.create(
       node.ne.sw,
@@ -415,33 +417,36 @@ export default class HashLife {
       node.ne.nw,
       node.ne.ne
     );
-
+    let gridNW = this.destruct(destructNW);
+    let gridNE = this.destruct(destructNE);
     let gridSW = this.destruct(topLvl);
-    this.matrix.push(gridSW);
+    //this.matrix.push(gridSW);
     console.log("sw", gridSW);
     let gridSE = this.destruct(destructSE);
-    this.matrix.push(gridSE);
+    //this.matrix.push(gridSE);
     console.log("se", gridSE);
-    let gridNW = this.destruct(destructNW);
-    this.matrix.push(gridNW);
+    
+    //this.matrix.push(gridNW);
     console.log("nw", gridNW);
-    let gridNE = this.destruct(destructNE);
-    this.matrix.push(gridNE);
+    
+    //this.matrix.push(gridNE);
     console.log("ne", gridNE);
 
-    return this.matrix;
+    return  this.matrix
   }
   transformToGrid(grid, gridArr) {
-    this.newGrid = grid;
-    for (let i = 0; i < 4; i++) {
-      for (let j = 0; j < 4; j++) {
-        let iC = grid.length - 1 - 4 * (i % 2);
+    console.log(grid[0])
+    const len = (gridArr.length/2)/4 
+    //this.newGrid = grid;
+    for (let i = 0; i < gridArr; i++) {
+      for (let j = 0; j < gridArr.length/2; j++) {
+        let iC = i  + 1 * (i % 2);
         let jC = j + 4 * Math.floor(i / 2);
 
-        grid[iC - 3][jC].state = gridArr[i][j][0];
-        grid[iC - 2][jC].state = gridArr[i][j][1];
-        grid[iC - 1][jC].state = gridArr[i][j][2];
-        grid[iC][jC].state = gridArr[i][j][3];
+        grid[iC][j].state = gridArr[i][j];
+        grid[iC][j+1].state = gridArr[i][j+1];
+        grid[iC][j+2].state = gridArr[i][j+2];
+        grid[iC][j+3].state = gridArr[i][j+3];
       }
     }
     return grid;
