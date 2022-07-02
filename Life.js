@@ -1,11 +1,13 @@
+import HashLife from "./Cell.js";
 const canvas = document.querySelector("canvas");
 const pauseBtn = document.querySelector(".pause");
 const checkbox = document.querySelector(".checkbox");
+const startBtn = document.getElementById("start");
 
 document.getElementById("pause").disabled = true;
 
-const width = 5300;
-const height = 1800;
+const width = 320;
+const height = 320;
 
 canvas.width = width;
 canvas.height = height;
@@ -34,7 +36,7 @@ const create2D = (cols, row) => {
 const cols = width / res;
 const row = height / res;
 
-let grid = create2D(cols, row);
+export let grid = create2D(cols, row);
 
 const fillGrid = () => {
   for (let i = 0; i < cols; i++) {
@@ -158,6 +160,7 @@ let prevPosition;
 let shapeSwitch = "default";
 let index_of_shape = 0;
 let isShift = false;
+let current;
 let itFit;
 
 draggable.forEach((draggables) => {
@@ -170,6 +173,8 @@ draggable.forEach((draggables) => {
     draggables.classList.remove("dragging");
 
     if (itFit) {
+      console.log(shapeSwitch);
+      console.log(prevPosition);
       prevPosition.forEach((item) => {
         grid[prevCord.x + item.x][prevCord.y + item.y] = {
           ...grid[prevCord.x][prevCord.y],
@@ -188,14 +193,17 @@ canvas.addEventListener("dragover", (e) => {
     isShift = false;
   }
 
+  /*Get current shape and give it the default shape */
   const currentShape = document.querySelector(".dragging");
 
   let shapeCoord;
   shapes.forEach((item) => {
     if (item.name === currentShape.id) {
       shapeCoord = item.status;
+      current = item.status;
     }
   });
+  /*===================================================== */
 
   const findShape = shapeConfig.find((item) => item.name === shapeSwitch);
 
@@ -244,10 +252,12 @@ canvas.addEventListener("dragover", (e) => {
   /*===================================================== */
   if (e.shiftKey && !isShift) {
     prevPosition = shapeCoord;
+
     shapeSwitch = changeShapeName();
 
     clearShape();
     isShift = true;
+    prevPosition = changeShape(current, shapeSwitch);
   }
 });
 
@@ -280,7 +290,6 @@ const changeShapeName = () => {
   let currentConfig;
   if (index_of_shape === shapeConfig.length - 1) {
     index_of_shape = 0;
-    console.log("end");
     currentConfig = shapeConfig[index_of_shape];
   } else {
     index_of_shape += 1;
@@ -393,11 +402,16 @@ const findCoord = (e) => {
   let i = Math.floor(x / res);
   let j = Math.floor(y / res);
 
+  const rangeX = i * res;
+
+  const rangeY = j * res;
+  console.log(3 % 2);
+
   if (
-    x >= grid[i][j].x &&
-    x <= grid[i][j].x + res &&
-    y >= grid[i][j].y &&
-    y <= grid[i][j].y + res &&
+    x >= rangeX &&
+    x <= rangeX + res &&
+    y >= rangeY &&
+    y <= rangeY + res &&
     grid[i][j].state === 0
   ) {
     grid[i][j] = {
@@ -406,10 +420,10 @@ const findCoord = (e) => {
     };
     onstart();
   } else if (
-    x >= grid[i][j].x &&
-    x <= grid[i][j].x + res &&
-    y >= grid[i][j].y &&
-    y <= grid[i][j].y + res &&
+    x >= rangeX &&
+    x <= rangeX + res &&
+    y >= rangeY &&
+    y <= rangeY + res &&
     grid[i][j].state === 1
   ) {
     grid[i][j] = {
@@ -460,7 +474,30 @@ const countNeighbors = (cell, x, y) => {
   return sum;
 };
 
-const onstart = () => {
+export const onstart = () => {
+  /*
+  let left = 0.5 - Math.ceil(canvas.width / res) * res;
+  //console.log("left", left);
+  let top = 0.5 - Math.ceil(canvas.height / res) * res;
+  //console.log("top", top);
+  let right = 2 * canvas.width;
+  //console.log("right", right);
+  let bottom = 2 * canvas.height;
+  //console.log("bottom", bottom);
+
+  ctx.clearRect(left, top, right - left, bottom - top);
+  ctx.beginPath();
+  for (let x = left; x < right; x += res) {
+    ctx.moveTo(x, top);
+    ctx.lineTo(x, bottom);
+  }
+  for (let y = top; y < bottom; y += res) {
+    ctx.moveTo(left, y);
+    ctx.lineTo(right, y);
+  }
+  ctx.strokeStyle = "#888";
+  ctx.stroke();*/
+
   for (let i = 0; i < cols; i++) {
     for (let j = 0; j < row; j++) {
       let x = i * res;
@@ -479,6 +516,36 @@ const onstart = () => {
     }
   }
 };
+/*Drag Screen
+let startDrag;
+const getPos = (e) => ({
+  x: e.clientX,
+  y: e.clientY,
+});
+
+const resetScreen = () => {
+  startDrag = null;
+  //ctx.setTransform(1, 0, 0, 1, 0, 0); // reset translation
+  onstart();
+};
+canvas.addEventListener("mousedown", (e) => {
+  //resetScreen();
+  startDrag = getPos(e);
+});
+
+canvas.addEventListener("mouseup", resetScreen);
+//canvas.addEventListener("mouseleave", resetScreen);
+
+canvas.addEventListener("mousemove", (e) => {
+  // Only move the grid when we registered a mousedown event
+  if (!startDrag) return;
+  let pos = getPos(e);
+  // Move coordinate system in the same way as the cursor
+  ctx.translate(pos.x - startDrag.x, pos.y - startDrag.y);
+  onstart();
+  startDrag = pos;
+  console.log("startDrag", startDrag);
+});*/
 
 const setup = () => {
   if (!stopped) {
@@ -546,6 +613,46 @@ const start = () => {
   stopped = false;
   draw();
 };
+
+const hash = new HashLife();
+
+const startGame = () => {
+  const level = 4;
+  const nodeGrid = hash.contruct(level, grid);
+  hash.worldDepth = nodeGrid.depth;
+  console.log("current Node: ", nodeGrid);
+  const nextGen = hash.evolve(nodeGrid);
+  console.log("next Generation", nextGen);
+
+  const border = hash.addBorder(nextGen);
+
+  const gridArr = hash.destruct(border);
+  console.log(gridArr);
+  //console.log(nextGen);
+
+  const newGrid = hash.transformToGrid(grid, gridArr);
+  onstart();
+  console.log("newGrid", newGrid);
+
+  //const border = hash.addBorder(nodeGrid);
+  /*
+  
+
+  const nextGen = hash.evolve(nodeGrid);
+  console.log(nextGen);
+  const border = hash.addBorder(nextGen);
+  console.log(border);
+
+  const gridArr = hash.destruct(border);
+  console.log(gridArr);
+
+  const newGrid = hash.transformToGrid(grid, gridArr);
+  console.log("newGrid", newGrid);
+  onstart();*/
+};
+
+startBtn.addEventListener("click", startGame);
+
 const draw = () => {
   setup();
   if (!stopped) {

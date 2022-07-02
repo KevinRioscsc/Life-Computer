@@ -2,7 +2,7 @@
   "name": "game_of_life",
   "version": "1.0.0",
   "description": "",
-  "main": "Controls.js",
+  "main": "Life.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/KevinRioscsc/Life-Computer/issues"
   },
-  "homepage": "https://github.com/KevinRioscsc/Life-Computer#readme"
+  "homepage": "https://github.com/KevinRioscsc/Life-Computer#readme",
+  "dependencies": {
+    "node-gol-hashlife": "^0.1.1"
+  }
 }
