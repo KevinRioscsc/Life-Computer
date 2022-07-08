@@ -1,4 +1,4 @@
-import { grid, onstart } from "./Life.js";
+import { grid, onstart } from "./Main.js";
 function zero2D(rows, cols) {
   var array = [],
     row = [];
@@ -73,7 +73,10 @@ export default class HashLife {
 
     this.CMr = zero2D(4, 4);
 
-    this.matrix = [];
+    this.matrix1 = [];
+    this.matrix2 = [];
+    this.matrix3 = [];
+    this.matrix4 = [];
   }
 
   generateTree(depth) {
@@ -335,36 +338,60 @@ export default class HashLife {
     return result;
   }
   nodeToGrid(node) {
-    let arr = [];
+    this.matrix1.push(node.nw.nw);
+    this.matrix1.push(node.nw.ne);
+    this.matrix1.push(node.ne.nw);
+    this.matrix1.push(node.ne.ne);
 
-    arr.push(node.nw.nw);
-    arr.push(node.nw.ne);
-    arr.push(node.ne.nw);
-    arr.push(node.ne.ne);
-    arr.push(node.nw.sw);
-    arr.push(node.nw.se);
-    arr.push(node.ne.sw);
-    arr.push(node.ne.se);
-    arr.push(node.sw.nw);
-    arr.push(node.sw.ne);
-    arr.push(node.se.nw);
-    arr.push(node.se.ne);
-    arr.push(node.sw.sw);
-    arr.push(node.sw.se);
-    arr.push(node.se.sw);
-    arr.push(node.se.se);
+    this.matrix2.push(node.nw.sw);
+    this.matrix2.push(node.nw.se);
+    this.matrix2.push(node.ne.sw);
+    this.matrix2.push(node.ne.se);
 
-    this.matrix.push(arr)
+    this.matrix3.push(node.sw.nw);
+    this.matrix3.push(node.sw.ne);
+    this.matrix3.push(node.sw.nw);
+    this.matrix3.push(node.sw.ne);
+
+    this.matrix4.push(node.sw.sw);
+    this.matrix4.push(node.sw.se);
+    this.matrix4.push(node.se.sw);
+    this.matrix4.push(node.se.se);
+
+    /*
+    let arr = zero2D(4, 4);
+
+    arr[0][0] = node.nw.nw;
+    arr[0][1] = node.nw.ne;
+    arr[0][2] = node.ne.nw;
+    arr[0][3] = node.ne.ne;
+
+    arr[1][0] = node.nw.sw;
+    arr[1][1] = node.nw.se;
+    arr[1][2] = node.ne.sw;
+    arr[1][3] = node.ne.se;
+
+    arr[2][0] = node.sw.nw;
+    arr[2][1] = node.sw.ne;
+    arr[2][2] = node.se.nw;
+    arr[2][3] = node.se.ne;
+
+    arr[3][0] = node.sw.sw;
+    arr[3][1] = node.sw.se;
+    arr[3][2] = node.se.sw;
+    arr[3][3] = node.se.se;
+
+    this.matrix.push(arr);*/
 
     return arr;
   }
   contruct(level, grid) {
     if (level === 1) {
       return this.create(
-        grid[1][0].state,
-        grid[1][1].state,
         grid[0][1].state,
-        grid[0][0].state
+        grid[1][1].state,
+        grid[0][0].state,
+        grid[1][0].state
       );
     }
 
@@ -394,7 +421,6 @@ export default class HashLife {
     );
   }
   destruct(node) {
-    console.log(node);
     if (node.depth === 2) {
       return this.nodeToGrid(node);
     }
@@ -406,10 +432,10 @@ export default class HashLife {
       node.se.ne
     );
     let destructNW = this.create(
-      node.nw.nw,
-      node.nw.ne,
       node.nw.sw,
-      node.nw.se
+      node.nw.se,
+      node.nw.nw,
+      node.nw.ne
     );
     let destructNE = this.create(
       node.ne.sw,
@@ -417,38 +443,59 @@ export default class HashLife {
       node.ne.nw,
       node.ne.ne
     );
-    let gridNW = this.destruct(destructNW);
-    let gridNE = this.destruct(destructNE);
-    let gridSW = this.destruct(topLvl);
-    //this.matrix.push(gridSW);
-    console.log("sw", gridSW);
-    let gridSE = this.destruct(destructSE);
-    //this.matrix.push(gridSE);
-    console.log("se", gridSE);
-    
-    //this.matrix.push(gridNW);
-    console.log("nw", gridNW);
-    
-    //this.matrix.push(gridNE);
-    console.log("ne", gridNE);
 
-    return  this.matrix
+    this.destruct(destructNW);
+    this.destruct(destructNE);
+    this.destruct(topLvl);
+    this.destruct(destructSE);
+
+    return this.matrix;
   }
   transformToGrid(grid, gridArr) {
-    console.log(grid[0])
-    const len = (gridArr.length/2)/4 
-    //this.newGrid = grid;
-    for (let i = 0; i < gridArr; i++) {
-      for (let j = 0; j < gridArr.length/2; j++) {
-        let iC = i  + 1 * (i % 2);
-        let jC = j + 4 * Math.floor(i / 2);
+    this.newGrid = grid;
 
-        grid[iC][j].state = gridArr[i][j];
-        grid[iC][j+1].state = gridArr[i][j+1];
-        grid[iC][j+2].state = gridArr[i][j+2];
-        grid[iC][j+3].state = gridArr[i][j+3];
+    const len = gridArr.length / 2 / 4;
+    let multiplyer = 1;
+    let halfLen = grid.length - 1;
+    let half = grid.length / 2;
+
+    for (let h = 0; h < gridArr.length; h += 4) {
+      if (h === gridArr.length / 2) {
+        multiplyer = 2;
+      }
+      for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+          console.log(h);
+
+          let iC = halfLen - 4 * (i % 2) - h;
+          let jC = j + 4 * Math.floor(i / 2);
+          console.log(iC, jC);
+
+          grid[iC - 3][jC + half * Math.floor(h / half)].state =
+            gridArr[h + i][j][0];
+          console.log(jC + half * Math.floor(h / half));
+          // console.log(grid[iC - 3][jC]);
+          grid[iC - 2][jC + half * Math.floor(h / half)].state =
+            gridArr[h + i][j][1];
+          //console.log(grid[iC - 2][jC]);
+          grid[iC - 1][jC + half * Math.floor(h / half)].state =
+            gridArr[h + i][j][2];
+          //console.log(grid[iC - 1][jC]);
+          grid[iC][jC + half * Math.floor(h / half)].state =
+            gridArr[h + i][j][3];
+          console.log(
+            grid[iC - 3][jC],
+            grid[iC - 2][jC],
+            grid[iC - 1][jC],
+            grid[iC][jC]
+          );
+          if (h === 4) {
+            console.log("===============================");
+          }
+        }
       }
     }
+
     return grid;
   }
 }

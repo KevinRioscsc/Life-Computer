@@ -8,6 +8,9 @@
     <title>Document</title>
   </head>
   <body>
+    <div class="navHead">
+      <h3>Game Of Life Circuit Tool</h3>
+    </div>
     <div id="menuToggle">
       <input type="checkbox" class="checkbox" />
 
@@ -16,20 +19,25 @@
       <span></span>
 
       <ul id="menu" class="container">
-        <div id="glider" class="draggable" draggable="true">
-          <img src="./Images/images.png" alt="" />
+        <h3 class="shape">Shapes</h3>
+        <div id="glider" class="draggable shapes" draggable="true">
+          <h3>Glider</h3>
         </div>
-        <div id="slider-2" class="draggable" draggable="true">
-          <img src="./Images/images.png" alt="" />
+
+        <div id="glider-gun" class="draggable shapes" draggable="true">
+          <h3>Glider Gun</h3>
         </div>
-        <div id="slider-3" class="draggable" draggable="true">
-          <img src="./Images/images.png" alt="" />
+        <div id="eater" class="draggable shapes" draggable="true">
+          <h3>Eater</h3>
         </div>
-        <div id="slider-4" class="draggable" draggable="true">
-          <img src="./Images/images.png" alt="" />
+        <div id="p46" class="draggable shapes" draggable="true">
+          <h3>p46 gun</h3>
         </div>
-        <div id="glider-gun" class="draggable" draggable="true">
-          <img src="./Images/images.png" alt="" />
+        <div id="p54" class="draggable shapes" draggable="true">
+          <h3>p54 gun</h3>
+        </div>
+        <div id="p20" class="draggable shapes" draggable="true">
+          <h3>period 20</h3>
         </div>
       </ul>
     </div>
@@ -38,18 +46,15 @@
     </div>
 
     <div class="flex">
-      <div class="logo">
-        <h3>Game of Life</h3>
-      </div>
-
       <div class="btn">
-        <button id="start" onclick="start()">Start</button>
-        <button id="random" onclick="randomize()">Random</button>
-        <button id="pause" class="pause" onclick="pause()">Pause</button>
-        <button id="reset" class="reset" onclick="reset()">Reset</button>
+        <button id="start">Start</button>
+        <button id="random">Random</button>
+        <button id="pause" class="pause">Pause</button>
+        <button id="reset" class="reset">Reset</button>
       </div>
     </div>
 
-    <script type="module" src="./Life.js"></script>
+    <script type="module" src="./src/Main.js"></script>
+    <script src="./src/scroll.js"></script>
   </body>
 </html>

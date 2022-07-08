@@ -1,4 +1,4 @@
-export const RLE_RE = /^\s*([0-9]*(o|b|\$)\s*)*!$/;
+const RLE_RE = /^\s*([0-9]*(o|b|\$)\s*)*!$/;
 
 function toArray(cells) {
   if (cells.length === 0) return [[false]];
@@ -32,7 +32,7 @@ function rle(row) {
   return ret.join("");
 }
 
-export function encode(cells) {
+function encode(cells) {
   const ar = toArray(cells);
   const lines = [];
   let numLines = 0;
@@ -80,9 +80,9 @@ export function decode(rle) {
   for (const [x, y] of cells) ret.push([x - dx, y - dy]);
   return ret;
 }
-/*
-console.table(
+
+console.log(
   decode(
     "24bo$22bobo$12b2o6b2o12b2o$11bo3bo4b2o12b2o$2o8bo5bo3b2o$2o8bo3bob2o4bobo$10bo5bo7bo$11bo3bo$12b2o!"
   )
-);*/
+);
